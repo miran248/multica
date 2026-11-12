@@ -730,7 +730,13 @@ multica issue delete <id> --yes           # no prompt
 multica issue delete MUL-101 MUL-102 --yes --output json
 ```
 
-Deletion is permanent and removes the issue's comments and attachments, cancels its in-flight runs, fails linked autopilot runs, clears duplicate marks that pointed at it, and detaches its child issues without deleting them. Every id is resolved before the prompt, so an unknown or invisible issue aborts the whole command instead of leaving a partial batch; several ids go to one batch request whose permission check covers the whole selection. Ids may be issue keys or full UUIDs.
+Deletion is permanent and removes the issue's comments and attachments, cancels its in-flight runs, fails linked autopilot runs, clears duplicate marks that pointed at it, and detaches its child issues without deleting them.
+
+Ids may be issue keys or full UUIDs. Every id is resolved with a read before the prompt, full UUIDs included, so an unknown, stale or invisible issue aborts the whole command instead of leaving a partial batch; several ids go to one batch request whose permission check covers the whole selection.
+
+`--yes` skips the confirmation. Without it the command reads stdin; if stdin closes without an answer (a non-interactive run) the command fails without deleting, while answering `n` declines and deletes nothing.
+
+With `--output json`, one id prints `{"id": "<uuid>", "deleted": true}` and several print `{"ids": ["<uuid>", ...], "deleted": true}`, always with canonical UUIDs whatever spelling was passed. If the server deletes only part of a batch, the command prints `{"ids": ["<uuid>", ...], "deleted": false, "deleted_count": N}` and exits non-zero.
 
 ### Reorder Issue
 
