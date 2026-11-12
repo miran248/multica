@@ -722,6 +722,16 @@ multica issue update <id> --attachment revised.png
 `--position` sets the raw ordering value within the board column (lower sorts first). For relative moves, `issue reorder` is easier because it works out the value for you.
 `--attachment` uploads a local file and appends its Markdown reference to the end of the issue description. Repeat the flag to attach multiple files. To replace an existing image, also use `--description-file` to remove the old reference from the description.
 
+### Delete Issue
+
+```bash
+multica issue delete <id>                 # prompts before deleting
+multica issue delete <id> --yes           # no prompt
+multica issue delete MUL-101 MUL-102 --yes --output json
+```
+
+Deletion is permanent and removes the issue's comments and attachments, cancels its in-flight runs, fails linked autopilot runs, clears duplicate marks that pointed at it, and detaches its child issues without deleting them. Every id is resolved before the prompt, so an unknown or invisible issue aborts the whole command instead of leaving a partial batch; several ids go to one batch request whose permission check covers the whole selection. Ids may be issue keys or full UUIDs.
+
 ### Reorder Issue
 
 Move an issue within its current status column. The new ordering value is computed the same way the board's drag-and-drop computes it, so the CLI and UI agree on where the issue lands.
